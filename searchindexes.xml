@@ -19,7 +19,11 @@ animatorInfo.normalizedTime 获取当前动画的播放进度，animatorInfo.IsT
 animatorInfo.shortNameHash 对比两个 AnimatorStateInfo，animatorInfo.IsTag 识别当前动画：
 发现当前帧与上一帧的动画信息不一致时，判定上一帧的动画播放结束，触发回调。
 private AnimatorStateInfo curAnimInfo, lastAnimInfo; private AnimatorStateInfo lastAnimInfo; private void UpdateAni02() { AnimatorStateInfo curAnimInfo = animator.GetCurrentAnimatorStateInfo(0); if(lastAnimInfo.shortNameHash != curAnimInfo.shortNameHash) { if(lastAnimInfo.IsTag(&#34;Attack&#34;)) Debug.LogError(&#34;attack animation end&#34;); lastAnimInfo = curAnimInfo; DoSomething(); } }   ]]></content></entry><entry><title>Git 入门到入土（四）一些操作汇总</title><url>/post/git-%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E5%9C%9F%E5%9B%9B%E4%B8%80%E4%BA%9B%E6%93%8D%E4%BD%9C%E6%B1%87%E6%80%BB/</url><categories><category>Git</category></categories><tags/><content type="html"> 汇总一些 git 的常用操作，以便后续查看。
-显示提交的信息
+git push 显示22端口连接错误
+错误显示：
+&amp;amp;gt; git push ssh: connect to host github.com port 22: Connection timed out fatal: Could not read from remote repository. 原因：可能是网络限制或阻塞导致无法通过端口 22 连接到 GitHub。
+解决方案：通过修改 SSH 配置来使用端口 443
+C:\Users\你的用户名\.ssh\config 配置以下内容（如果没有该文件，请手动创建，没有后缀） Host github.com Hostname ssh.github.com Port 443 输入 ssh -T git@github.com 测试 SSH 连接 显示提交的信息
 列出所有的提交，包括每次提交的作者、日期、提交消息等详细信息：
 git log 如果需要更容易地浏览和识别特定的提交：
 git log --oneline --oneline：这个选项会修改 git log 的输出，使得每个提交只显示一行信息。通常，这行信息包括两个主要部分：
@@ -30,13 +34,7 @@ git log --oneline --oneline：这个选项会修改 git log 的输出，使得�
 在交互式界面中，你会看到类似于以下内容的列表：
 pick abc1234 上次提交的消息 pick def5678 倒数第二次提交的消息 要将最新的提交合并到前一个提交中，你需要将 pick 关键字更改为 squash 或者 s（简写）：
 pick abc1234 倒数第二次提交的消息 squash def5678 上次提交的消息 （3）编辑提交消息：
-保存并关闭编辑器后，Git 会打开另一个编辑器窗口，让你编辑合并后的提交消息。你可以选择保留其中一个提交消息，或者编写一个新的提交消息。
-（4）完成变基：
-完成编辑后，保存并关闭编辑器。Git 将执行变基操作，将两次提交合并为一次。
-请注意，如果你已经将这些提交推送到了远程仓库，那么在进行这些操作之后，你需要使用 git push --force 命令强制推送到远程仓库。这可能会影响其他正在使用该仓库的开发者，因此在执行此操作之前请确保清楚其后果。
-回退上一次提交
-要回退到 git 中的上一次提交，可以使用以下命令：
-git reset --hard HEAD~1：这个命令将回退到上一个提交，撤销上一次提交所做的所有更改。HEAD~1 是指上一个提交的指针，而 --hard 参数意味着您的工作目录中的文件也会被重置，匹配上一个提交的状态。 git reset --soft …</content></entry><entry><title>Git 入门到入土（三）结合 GitHub 实现远程管理</title><url>/post/git-%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E5%9C%9F%E4%B8%89%E7%BB%93%E5%90%88-github-%E5%AE%9E%E7%8E%B0%E8%BF%9C%E7%A8%8B%E7%AE%A1%E7%90%86/</url><categories><category>Git</category></categories><tags/><content type="html"><![CDATA[  我们之前的文章都是在本地对项目仓库进行版本管理，现在要把仓库 push 上 GitHub 进行远程版本管理，主要是为了方便备份项目，应对本地项目丢失的问题。
+保存并关闭编辑器后，Git 会打开另一个编辑器窗口，让你编辑合并后的提交消息。你可以选择 …</content></entry><entry><title>Git 入门到入土（三）结合 GitHub 实现远程管理</title><url>/post/git-%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E5%9C%9F%E4%B8%89%E7%BB%93%E5%90%88-github-%E5%AE%9E%E7%8E%B0%E8%BF%9C%E7%A8%8B%E7%AE%A1%E7%90%86/</url><categories><category>Git</category></categories><tags/><content type="html"><![CDATA[  我们之前的文章都是在本地对项目仓库进行版本管理，现在要把仓库 push 上 GitHub 进行远程版本管理，主要是为了方便备份项目，应对本地项目丢失的问题。
 01 创建 GitHub 仓库本文默认了你有一个 GitHub 账号了，如果没有，请先去注册。
 创建完成之后是这样的：
 其实下面 GitHub 已经提供了上传仓库的命令，但是你可以跟着我敲一遍。
@@ -81,6 +79,7 @@ git reset --hard HEAD^ 如果你是 windows 用户，可以使用：
 回退一个版本：git reset --hard HEAD~1 一般都是默认回退一个版本：git reset --hard HEAD~ （2）回退指定版本：
 git reset --hard f2b63(这个是版本号) 回退后，可以看到 test_error.txt 文件也消失了，这这样你就可以在上一个正确的版本基础上重新开始你的开发工作了。
   ]]></content></entry><entry><title>Git 入门到入土（一）安装 Git</title><url>/post/git-%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E5%9C%9F%E4%B8%80%E5%AE%89%E8%A3%85-git/</url><categories><category>Git</category></categories><tags/><content type="html"><![CDATA[   常用网站和资料
+git 动画学习：https://learngitbranching.js.org/
 官网：Git - Documentation廖雪峰git教程：Git教程常用git指令(案例)：https://liaoxuefeng.gitee.io/re一、安装 Git直接从 Git 官网下载最新的长期支持版：https://git-scm.com/
 直接下一步直到安装完成就可以了，安装没什么可说的。
 输入 git -v 命令查看是否安装成功：
